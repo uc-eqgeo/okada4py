@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include "dc3d.h"
 #include "disloc3d.h"
 
 //
 // TODO: change flagout,flagout2 to int arrays
-// 
+//
 // Note that flagout2 was previosly disabled (re-enabled since we're using only one station)
 //
 
@@ -21,14 +23,14 @@ void disloc3d(double *models, int nmod,
     //  stations    [nstat x 3]
     //  mu          [1 x 1]
     //  nu          [1 x 1]
-    
+
     // matrices for return arguments
     //  uout        [nstat x 3]
     //  dout        [nstat x 9]
     //  sout        [nstat x 6]
     //  flagout     [nstat x 1]
     //  flagout2    [nstat x nmod]
-    
+
     double lambda;
     double theta;
 
@@ -89,7 +91,7 @@ void disloc3d(double *models, int nmod,
             uxxt = uxyt = uxzt = 0;
             uyxt = uyyt = uyzt = 0;
             uzxt = uzyt = uzzt = 0;
-            
+
             for (j = 0; j < nmod; j++)
             {
                 model = &models[10*j];
@@ -115,7 +117,7 @@ void disloc3d(double *models, int nmod,
                 // Small hack for patches touching the surface
                 if (depth - sd*model[1]*0.5 < 0.)
                 {
-                    // Add 0.01 meters 
+                    // Add 0.01 meters
                     depth += 0.00001;
                 }
 
@@ -132,7 +134,7 @@ void disloc3d(double *models, int nmod,
                 {
                     dc3d_(&alpha, &x, &y, &z, &depth, &dip,
                           &al1, &al2, &aw1, &aw2, &disl1, &disl2, &disl3,
-                          &ux,  &uy,  &uz, 
+                          &ux,  &uy,  &uz,
                           &uxx, &uyx, &uzx,
                           &uxy, &uyy, &uzy,
                           &uxz, &uyz, &uzz,
@@ -152,11 +154,11 @@ void disloc3d(double *models, int nmod,
                     uxxt += cs*cs*uxx + cs*ss*(uxy + uyx) + ss*ss*uyy; // aaa
                     uxyt += cs*cs*uxy - ss*ss*uyx + cs*ss*(-uxx + uyy); // bbb
                     uxzt += cs*uxz + ss*uyz; // ccc
-                    
+
                     uyxt += -(ss*(cs*uxx + ss*uxy)) + cs*(cs*uyx + ss*uyy); // ddd
                     uyyt += ss*ss*uxx - cs*ss*(uxy + uyx) + cs*cs*uyy; // eee
                     uyzt += -(ss*uxz) + cs*uyz; // fff
-                    
+
                     uzxt += cs*uzx + ss*uzy; // ggg
                     uzyt += -(ss*uzx) + cs*uzy; // hhh
                     uzzt += uzz; // iii
@@ -172,7 +174,7 @@ void disloc3d(double *models, int nmod,
             u[0] = uxt;
             u[1] = uyt;
             u[2] = uzt;
-            
+
             d[0] = uxxt;
             d[1] = uxyt;
             d[2] = uxzt;
